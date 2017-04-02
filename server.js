@@ -26,7 +26,31 @@ switch (app.get('env')) {
 }
 
 app.use(bodyParser.json());
-app.use(cookieParser());
+//app.use(expressJWT({ secret: 'sagerioz'}));
+
+app.use(cookieParser())
+
+app.get('/', function(req, res) {
+  console.log('Cookies: ', req.cookies)
+ //
+ //
+ //  var visits = getCookie("counter");
+ //  maxAge = 24 * 60 * 60 * 1000;
+ //  if (!visits) {
+ //    visits = 1;
+ //    console.log("By the way, this is your first time here.");
+ //  } else {
+ //    visits = parseInt(visits) + 1;
+ //    console.log("By the way, you have been here " + visits + " times.");
+ //  }
+ //  var opts = {
+ //    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+ //   httpOnly: true
+ // };
+ // res.clearCookie("counter", { path: '/' });
+ //res.cookie('counter', visits, opts);
+})
+
 
 const path = require('path');
 
