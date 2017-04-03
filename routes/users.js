@@ -7,7 +7,7 @@ const knex = require('../knex')
 const router = express.Router();
 
 // YOUR CODE HERE
-router.post('/users', (req, res, next) => {
+router.post('/', (req, res, next) => {
   bcrypt.hash(req.body.password, 12)
    .then((hashed_password) => {
    let body = humps.decamelizeKeys(req.body)

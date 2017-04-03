@@ -3,38 +3,87 @@
 const express = require('express');
 const humps = require('humps');
 const knex = require('../knex');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const boom = require('boom');
+
 // eslint-disable-next-line new-cap
 const router = express.Router();
 // YOUR CODE HERE
-router.get('/token', (req, res, next) => {
-  console.log('Cookies: ', req.cookies)
-  var visits = getCookie("counter");
-  if (!visits) {
-    visits = 1;
-    console.log("By the way, this is your first time here.");
-  } else {
-    visits = parseInt(visits) + 1;
-    console.log("By the way, you have been here " + visits + " times.");
-  }
-  var opts = {
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-   httpOnly: true
-  };
+router.get('/', (req, res, next) => {
+  //console.log('Cookies: ', req.cookies)
+  if(!req.cookies.token){
+res.status(200).send(false);
+}else{
+  res.status(200).send(true);
+}
+// res.setHeader('content-type', 'json');
   //res.clearCookie("counter", { path: '/token' });
-  res.cookie('counter', 'visits', opts);
-
-  //res.end();
+//res.cookie('counter', { foo: 'bar', bazz: 'buzz'});
+// res.end();
 })
 
-router.post('/token', (req, res, next) => {
+router.post('/', (req, res, next) => {
+      console.log("REQ BODY", req.body);
+      let email = req.body.email
+      let password = req.body.password
+      console.log("EMAIL ", email);
+      knex('users')
+        .where('email', email)
+        .then((user) => {
+          if (user.length > 0) {
+            console.log("USER", user);
+
+            //bcrpt compare
+            bcrypt.compare(password, user[0].hashed_password, function(err, boolean) {
+              if (boolean) {
+                var token = jwt.sign({
+                  email: user[0].email,
+                  password: user[0].hashed_password
+                }, 'shhhhh');
+                res.cookie('token', token, {
+                  httpOnly: true
+                });
+                console.log("THE DELETED PIECE", user[0].hashed_password);
+                delete user[0].hashed_password;
+                res.send(humps.camelizeKeys(user[0]));
+              }else{
+                next(boom.create(400, "Bad email or password"))
+              }
+            });
+
+          }else{
+            next(boom.create(400, "Bad email or password"))
+          }
+
+          //
+          //
+          // res.cookie()
+        })
+//res.cookie('counter', { foo: 'bar', bazz: 'buzz'});
 
 })
 //
-router.delete('/token', (req, res, next) => {
-
+router.delete('/', (req, res, next) => {
+  res.clearCookie('token')
+  res.status(200)
+res.send();
 })
 //
+function checkForAuthentification(req,res,next) {
+  if (req.session.jwt) {
+    jwt.verify(req.session.jwt, 'shhhh', function(err, decoded) {
+      if (err) {
+        res.sendStatus(403);
+      } else {
+        req.user = decoded;
+        next();
+      }
+    });
+  } else {
+    res.sendStatus(403);
+  }
+}
 
 module.exports = router;

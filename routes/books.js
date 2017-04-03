@@ -8,7 +8,7 @@ const knex = require('../knex');
 const router = express.Router();
 
 // YOUR CODE HERE
-router.get('/books', (req, res, next) => {
+router.get('/', (req, res, next) => {
   knex('books')
     .orderBy('title')
     .then(books => {
@@ -16,7 +16,7 @@ router.get('/books', (req, res, next) => {
     })
 
 })
-router.get('/books/:id', (req, res, next) => {
+router.get('/:id', (req, res, next) => {
   let id = req.params.id;
   // if (Number.isNaN(id)) {
   //   const err = new Error('query is not valid');
@@ -43,7 +43,7 @@ router.get('/books/:id', (req, res, next) => {
 })
 
 
-router.post('/books', (req, res, next) => {
+router.post('/', (req, res, next) => {
   let body = req.body;
   console.log(body);
   knex('books')
@@ -60,7 +60,7 @@ router.post('/books', (req, res, next) => {
     })
 })
 //
-router.patch('/books/:id', (req, res, next) => {
+router.patch('/:id', (req, res, next) => {
   let id = req.params.id;
   let body = req.body;
   knex('books')
@@ -78,7 +78,7 @@ router.patch('/books/:id', (req, res, next) => {
     })
 })
 //
-router.delete('/books/:id', (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
   let id = req.params.id;
   knex('books')
     .returning(['title', 'author', 'genre', 'description', 'cover_url'])
