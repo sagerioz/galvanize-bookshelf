@@ -4,10 +4,8 @@ const express = require('express');
 const humps = require('humps');
 const knex = require('../knex');
 
-// eslint-disable-next-line new-cap
 const router = express.Router();
 
-// YOUR CODE HERE
 router.get('/', (req, res, next) => {
   knex('books')
     .orderBy('title')
@@ -18,14 +16,6 @@ router.get('/', (req, res, next) => {
 })
 router.get('/:id', (req, res, next) => {
   let id = req.params.id;
-  // if (Number.isNaN(id)) {
-  //   const err = new Error('query is not valid');
-  //  err.status = 404;
-    //res.set('Content-Type', 'text/plain');
-  //   throw err;
-  //   res.send(err)
-  //
-  // }
   knex('books')
     .where('id', id)
     .then(books => {

@@ -18,10 +18,8 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  //console.log("REQ BODY", req.body);
   let email = req.body.email
   let password = req.body.password
-  //console.log("EMAIL ", email);
   if (!email) {
     next(boom.create(400, "Email must not be blank"))
   } else if (!password) {
@@ -31,7 +29,6 @@ router.post('/', (req, res, next) => {
       .where('email', email)
       .then((user) => {
         if (user.length > 0) {
-          //console.log("USER", user);
           bcrypt.compare(password, user[0].hashed_password, function(err, boolean) {
             if (boolean) {
               const token = jwt.sign({
