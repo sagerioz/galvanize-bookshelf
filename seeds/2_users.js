@@ -4,8 +4,6 @@ exports.seed = function(knex) {
     .then(() => {
       return knex('users').insert(
         [{
-
-        // Inserts seed entries
         id: 1,
         first_name: 'Joanne',
         last_name: 'Rowling',
