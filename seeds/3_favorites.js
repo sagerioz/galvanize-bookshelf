@@ -2,7 +2,7 @@
 exports.seed = function(knex) {
   return knex('favorites').del()
     .then(() => {
-      return knex('users').insert(
+      return knex('favorites').insert(
         [{
           id: 1,
           book_id: 1,
