@@ -16,20 +16,16 @@ router.get('/', (req, res, next) => {
 })
 router.get('/:id', (req, res, next) => {
   let id = req.params.id;
+
   knex('books')
     .where('id', id)
+    //this checks for invalid data, i.e. :id = 9000, -1, one
     .then(books => {
       if (!books) {
-        const err = new Error('book does not exist');
-        err.status = 404;
-        throw err;
+        return next(boom.create(404, "Not Found"))
       }
       res.send(humps.camelizeKeys(books[0]));
     })
-    .catch(function(err) {
-         res.status(404).send('book doesnt exist')
-    })
-
 })
 
 
